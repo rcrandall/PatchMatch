@@ -1,6 +1,7 @@
 function [offsets,matchTable] = PropagateEven(patchTable,offsets,matchTable)
 
     kmatch = size(offsets,3);
+    vecLength = size(patchTable,3)*size(patchTable,4);
 
     for i = size(patchTable,1):-1:2
         for j = size(patchTable,2):-1:2
@@ -10,7 +11,7 @@ function [offsets,matchTable] = PropagateEven(patchTable,offsets,matchTable)
                 
                 % Try to propagate match down
                 if(ii - 1 >= 1)
-                    d2 = norm(squeeze(patchTable(i-1,j,:) - patchTable(ii-1,jj,:)))^2;                   
+                    d2 = sum(sum((patchTable(i-1,j,:,:) - patchTable(ii-1,jj,:,:)).^2))/vecLength;                   
                     if(d2 < matchTable(i-1,j,2))
                         km = matchTable(i-1,j,1);
                         offsets(i-1,j,km,1:2) = [ii-i;jj-j];
@@ -29,7 +30,7 @@ function [offsets,matchTable] = PropagateEven(patchTable,offsets,matchTable)
 
                 % Try to propagate match right
                 if(jj-1 >= 1)
-                    d2 = norm(squeeze(patchTable(i,j-1,:) - patchTable(ii,jj-1,:)))^2;
+                    d2 = sum(sum((patchTable(i,j-1,:,:) - patchTable(ii,jj-1,:,:)).^2))/vecLength;
                     if(d2 < matchTable(i,j-1,2))
                         km = matchTable(i,j-1,1);
                         offsets(i,j-1,km,1:2) = [ii-i;jj-j];
@@ -49,7 +50,7 @@ function [offsets,matchTable] = PropagateEven(patchTable,offsets,matchTable)
                 % Try to propagate match down and right
                 if(ii-1 >= 1 && ...
                    jj-1 >= 1)
-                    d2 = norm(squeeze(patchTable(i-1,j-1,:) - patchTable(ii-1,jj-1,:)))^2;
+                    d2 = sum(sum((patchTable(i-1,j-1,:,:) - patchTable(ii-1,jj-1,:,:)).^2))/vecLength;
 
                     if(d2 < matchTable(i-1,j-1,2))
                         km = matchTable(i-1,j-1,1);

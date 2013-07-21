@@ -8,17 +8,19 @@ function [offsets,maxTable] = InitTableRand(patchTable,searchHalfWin,kmatch)
     
     % Randomly initialize matches
     for i = 1:size(patchTable,1)
+        % Constrain offsets using search window size and boundaries
         imin = max(1,i-searchHalfWin);
         imax = min(size(patchTable,1),i+searchHalfWin);
         for j = 1:size(patchTable,2)
             jmin = max(1,j-searchHalfWin);
             jmax = min(size(patchTable,2),j+searchHalfWin);
             
-            % Warning - uniqueness not guaranteed at this point!
+            % Warning - uniqueness not guaranteed at this point for knn!
+            % Fix this!
             for k = 1:kmatch
                 % Don't self-match
                 while(offsets(i,j,k,1) == 0 && offsets(i,j,k,2) == 0)
-                    offsets(i,j,k,1:2) = [floor(rand*(imax - imin + 1)) + imin - i;...
+                      offsets(i,j,k,1:2) = [floor(rand*(imax - imin + 1)) + imin - i;...
                                       floor(rand*(jmax - jmin + 1)) + jmin - j];
                 end
                 offsets(i,j,k,3) = norm(squeeze(patchTable(i,j,:) - ...
