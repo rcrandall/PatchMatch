@@ -1,7 +1,8 @@
 
 function [offsets,maxTable] = InitTableRand(patchTable,searchHalfWin,kmatch)
 
-    offsets = zeros(size(patchTable,1),size(patchTable,2),kmatch,3);
+    vecLength = size(patchTable,4)*size(patchTable,5);
+    offsets = zeros(size(patchTable,1),size(patchTable,2),kmatch,4);
     if(nargout == 2)
        maxTable = 1e6*ones(size(patchTable,1),size(patchTable,2),2); 
     end
@@ -20,14 +21,15 @@ function [offsets,maxTable] = InitTableRand(patchTable,searchHalfWin,kmatch)
             for k = 1:kmatch
                 % Don't self-match
                 while(offsets(i,j,k,1) == 0 && offsets(i,j,k,2) == 0)
-                      offsets(i,j,k,1:2) = [floor(rand*(imax - imin + 1)) + imin - i;...
-                                      floor(rand*(jmax - jmin + 1)) + jmin - j];
+                      offsets(i,j,k,1:3) = [floor(rand*(imax - imin + 1)) + imin - i;...
+                                            floor(rand*(jmax - jmin + 1)) + jmin - j;...
+                                            1];
                 end
-                offsets(i,j,k,3) = norm(squeeze(patchTable(i,j,:) - ...
-                                      patchTable(i + offsets(i,j,k,1),j + offsets(i,j,k,2),:)))^2;
+                offsets(i,j,k,4) = sum(sum((patchTable(i,j,1,:,:) - ...
+                                            patchTable(i + offsets(i,j,k,1),j + offsets(i,j,k,2),1,:,:)).^2))/vecLength;
             end
             
-            [maxVal,maxInd] = max(offsets(i,j,:,3));
+            [maxVal,maxInd] = max(offsets(i,j,:,4));
             maxTable(i,j,:) = [maxInd; maxVal];
         end
     end
