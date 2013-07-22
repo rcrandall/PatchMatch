@@ -13,14 +13,14 @@ function random_search(patchTable,offsets,matchTable,searchHalfWin,numItRS)
             jmax = min(size(patchTable,2),j+searchHalfWin)
 
             for nIt = 1:numItRS
-                ii = floor(rand*(imax-imin+1)) + imin
-                jj = floor(rand*(jmax-jmin+1)) + jmin
+                ii = floor(rand()*(imax-imin+1)) + imin
+                jj = floor(rand()*(jmax-jmin+1)) + jmin
                 # Don't allow self-matching
                 while(ii == i && jj == j)
-                    ii = floor(rand*(imax-imin+1)) + imin
-                    jj = floor(rand*(jmax-jmin+1)) + jmin
+                    ii = floor(rand()*(imax-imin+1)) + imin
+                    jj = floor(rand()*(jmax-jmin+1)) + jmin
                 end
-                kk = floor(rand*(kmax-kmin+1)) + kmin
+                kk = floor(rand()*(kmax-kmin+1)) + kmin
                 d2 = sum(abs2(patchTable[i,j,1,:] - patchTable[ii,jj,kk,:]))/vecLength
 
                 if(d2 < matchTable[i,j,2])
